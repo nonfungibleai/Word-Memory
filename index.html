@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 쑥쑥 성구 암송</title>
+    <title>쑥쑥 성구 암송 - 정자체 카드</title>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,21 +13,53 @@
             --theme-4: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --current-font: 'Nanum Gothic', sans-serif;
         }
-        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; transition: 0.3s; }
+        
+        /* 설정 섹션 */
         .settings-panel { width: 100%; max-width: 600px; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .theme-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; }
         select { padding: 8px; border-radius: 10px; border: 1px solid #ddd; font-family: inherit; }
+
         .top-nav { width: 100%; max-width: 600px; display: flex; gap: 10px; margin-bottom: 20px; }
         .search-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; }
-        .card { width: 100%; max-width: 600px; height: 350px; border-radius: 25px; position: relative; padding: 60px 40px 40px 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px; overflow: hidden; font-family: var(--current-font); }
-        .week-badge { position: absolute; top: 20px; left: 25px; background: rgba(255,255,255,0.9); padding: 5px 15px; border-radius: 10px; font-size: 1rem; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); }
-        .year-badge { position: absolute; top: 20px; right: 25px; background: #333; color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
-        .verse-container { width: 100%; height: 200px; display: flex; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
-        .verse-content { font-weight: 700; line-height: 1.6; word-break: keep-all; width: 100%; color: #222; }
-        .verse-ref { font-size: 1.2rem; margin-top: 20px; font-weight: bold; color: #555; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 10px; width: 60%; text-align: center; }
-        button { padding: 14px 24px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.2s; }
+
+        /* 카드 고정 크기 디자인 */
+        .card { 
+            width: 100%; max-width: 600px; height: 320px; /* 높이 고정 */
+            border-radius: 25px; position: relative; padding: 50px 30px 30px 30px; 
+            box-sizing: border-box; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px;
+            overflow: hidden; font-family: var(--current-font);
+        }
+
+        .week-badge { 
+            position: absolute; top: 15px; left: 15px; 
+            background: rgba(255,255,255,0.9); padding: 4px 12px; 
+            border-radius: 8px; font-size: 0.9rem; font-weight: bold; border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .version-badge { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; }
+
+        /* 폰트 자동 조절을 위한 컨테이너 */
+        .verse-container {
+            width: 100%; height: 180px; 
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; overflow: hidden;
+        }
+        
+        .verse-content { 
+            font-weight: 700; line-height: 1.4; word-break: keep-all; width: 100%;
+            /* 기본 폰트 사이즈는 JS에서 자동 조절함 */
+        }
+
+        .verse-ref { font-size: 1.1rem; margin-top: 15px; font-weight: bold; color: #444; }
+
+        button { padding: 12px 20px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: inherit; }
         .btn-main { background: #333; color: white; }
-        .btn-admin { background: #ff8b94; color: white; margin-top: 15px; font-size: 0.9rem; }
+        .btn-admin { background: #ff8b94; color: white; margin-top: 10px; }
+        
         #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 100; width: 90%; max-width: 450px; overflow-y: auto; max-height: 90vh; }
         #admin-panel input, #admin-panel textarea { width: 100%; margin-bottom: 10px; padding: 12px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; }
     </style>
@@ -35,86 +67,122 @@
 <body>
 
 <div class="settings-panel">
-    <div style="display: flex; gap: 10px; align-items: center;">
+    <div style="display: flex; gap: 8px; align-items: center;">
         <div class="theme-dot" style="background: var(--theme-1)" onclick="changeTheme(1)"></div>
         <div class="theme-dot" style="background: var(--theme-2)" onclick="changeTheme(2)"></div>
         <div class="theme-dot" style="background: var(--theme-3)" onclick="changeTheme(3)"></div>
         <div class="theme-dot" style="background: var(--theme-4)" onclick="changeTheme(4)"></div>
     </div>
     <select id="fontSelect" onchange="changeFont()">
-        <option value="'Nanum Gothic', sans-serif">나눔고딕 (정자체)</option>
-        <option value="'Nanum Myeongjo', serif">나눔명조 (단정함)</option>
-        <option value="'Noto Sans KR', sans-serif">본고딕 (현대적)</option>
+        <option value="'Nanum Gothic', sans-serif">기본 정자체 (나눔고딕)</option>
+        <option value="'Nanum Myeongjo', serif">단정한 명조체 (나눔명조)</option>
+        <option value="'Noto Sans KR', sans-serif">깔끔한 본고딕 (Noto Sans)</option>
     </select>
 </div>
 
 <div class="top-nav">
-    <input type="number" id="searchWeek" class="search-box" placeholder="2026년 주차 이동">
+    <input type="number" id="searchWeek" class="search-box" placeholder="주차 검색 (예: 1)">
     <button class="btn-main" onclick="searchVerse()">이동</button>
 </div>
 
-<div class="card" id="card-main" style="background: var(--theme-1);">
-    <div class="week-badge" id="display-week">1주차</div>
-    <div class="year-badge">2026년</div>
+<div class="card" id="card-kor" style="background: var(--theme-1);">
+    <div class="week-badge" id="display-week-kor">1주</div>
+    <div class="version-badge">개역한글</div>
     <div class="verse-container">
-        <div class="verse-content" id="text-main">로딩 중...</div>
+        <div class="verse-content" id="text-kor">말씀을 등록해 주세요.</div>
     </div>
-    <div class="verse-ref" id="ref-main"></div>
+    <div class="verse-ref" id="ref-kor"></div>
 </div>
 
-<div style="display: flex; gap: 15px;">
-    <button class="btn-main" onclick="moveWeek(-1)">이전 구절</button>
-    <button class="btn-main" onclick="moveWeek(1)">다음 구절</button>
+<div class="card" id="card-eng" style="background: var(--theme-1)">
+    <div class="week-badge" id="display-week-eng">1주</div>
+    <div class="version-badge">ESV</div>
+    <div class="verse-container">
+        <div class="verse-content" id="text-eng">Please register a verse.</div>
+    </div>
+    <div class="verse-ref" id="ref-eng"></div>
 </div>
 
-<button class="btn-admin" onclick="openAdmin()">⚙️ 관리자 모드 (성구 추가/수정)</button>
+<div style="display: flex; gap: 10px;">
+    <button class="btn-main" onclick="moveWeek(-1)">이전 주</button>
+    <button class="btn-main" onclick="moveWeek(1)">다음 주</button>
+</div>
+<button class="btn-admin" onclick="openAdmin()">⚙️ 성구 관리자 (수동 입력)</button>
 
 <div id="admin-panel">
-    <h3>2026 성구 데이터 관리 ✍️</h3>
+    <h3>성구 직접 등록 ✨</h3>
     <input type="number" id="new-week" placeholder="주차 (숫자)">
-    <textarea id="new-kor" rows="5" placeholder="성경 본문 입력"></textarea>
+    <label>한글 성구</label>
+    <textarea id="new-kor" rows="3" placeholder="한글 본문을 직접 입력하세요"></textarea>
     <input type="text" id="new-kor-ref" placeholder="장절 (예: 시편 23:1)">
+    <label>영문 성구</label>
+    <textarea id="new-eng" rows="3" placeholder="English verse here"></textarea>
+    <input type="text" id="new-eng-ref" placeholder="English Ref (예: Psalm 23:1)">
+    
     <button class="btn-main" style="width: 100%; background: #ff8b94;" onclick="addNewVerse()">저장하기</button>
     <button style="width: 100%; margin-top: 10px; background: #eee;" onclick="document.getElementById('admin-panel').style.display='none'">닫기</button>
 </div>
 
 <script>
-    // 2025년 데이터 기반 2026년 성구 리스트
-    const initialVerses = [
-        { week: 1, kor: "태초에 하나님이 천지를 창조하시니라", korRef: "창세기 1:1" },
-        { week: 2, kor: "여호와는 나의 목자시니 내게 부족함이 없으리로다", korRef: "시편 23:1" },
-        { week: 3, kor: "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 그를 믿는 자마다 멸망하지 않고 영생을 얻게 하려 하심이라", korRef: "요한복음 3:16" },
-        { week: 4, kor: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라 이것이 그리스도 예수 안에서 너희를 향하신 하나님의 뜻이니라", korRef: "데살로니가전서 5:16-18" },
-        { week: 5, kor: "너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라 너는 범사에 그를 인정하라 그리하면 네 길을 지도하시리라", korRef: "잠언 3:5-6" },
-        { week: 6, kor: "오직 성령의 열매는 사랑과 희락과 화평과 오래 참음과 자비와 양선과 충성과 온유와 절제니 이같은 것을 금지할 법이 없느니라", korRef: "갈라디아서 5:22-23" },
-        { week: 7, kor: "네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고 네 의를 빛 같이 나타내시며 네 공의를 정오의 빛 같이 하시리로다", korRef: "시편 37:5-6" },
-        { week: 8, kor: "하나님이 우리에게 주신 것은 두려워하는 마음이 아니요 오직 능력과 사랑과 절제하는 마음이니", korRef: "디모데후서 1:7" },
-        { week: 9, kor: "너희는 이 세대를 본받지 말고 오직 마음을 새롭게 함으로 변화를 받아 하나님의 선하시고 기뻐하시고 온전하신 뜻이 무엇인지 분별하도록 하라", korRef: "로마서 12:2" },
-        { week: 10, kor: "우리가 알거니와 하나님을 사랑하는 자 곧 그의 뜻대로 부르심을 입은 자들에게는 모든 것이 합력하여 선을 이루느니라", korRef: "로마서 8:28" }
-        // 필요시 관리자 모드에서 주차를 계속 추가할 수 있습니다.
+    let bibleVerses = JSON.parse(localStorage.getItem('bibleVerses')) || [
+        { week: 1, kor: "여호와는 나의 목자시니 내게 부족함이 없으리로다", korRef: "시편 23:1", eng: "The LORD is my shepherd; I shall not want.", engRef: "Psalm 23:1" }
     ];
-
-    let bibleVerses = JSON.parse(localStorage.getItem('bibleVerses_2026_v2')) || initialVerses;
     let currentIndex = 0;
 
+    // 폰트 크기 자동 조절 함수
     function adjustFontSize() {
-        const container = document.querySelector('.verse-container');
-        const textElement = document.getElementById('text-main');
-        let fontSize = 2.2; 
-        textElement.style.fontSize = fontSize + "rem";
-        
-        while ((textElement.scrollHeight > container.offsetHeight || textElement.scrollWidth > container.offsetWidth) && fontSize > 0.9) {
-            fontSize -= 0.1;
+        const containers = document.querySelectorAll('.verse-container');
+        containers.forEach(container => {
+            const textElement = container.querySelector('.verse-content');
+            let fontSize = 2.0; // 시작 폰트 사이즈 (rem)
             textElement.style.fontSize = fontSize + "rem";
-        }
+
+            // 텍스트가 컨테이너 높이를 넘어가면 사이즈를 줄임
+            while (textElement.scrollHeight > container.offsetHeight && fontSize > 0.8) {
+                fontSize -= 0.1;
+                textElement.style.fontSize = fontSize + "rem";
+            }
+        });
     }
 
     function render() {
         const v = bibleVerses[currentIndex];
-        document.getElementById('display-week').innerText = `${v.week}주차`;
-        document.getElementById('text-main').innerText = v.kor;
-        document.getElementById('ref-main').innerText = v.korRef;
-        setTimeout(adjustFontSize, 30);
+        document.getElementById('display-week-kor').innerText = `${v.week}주`;
+        document.getElementById('display-week-eng').innerText = `${v.week}주`;
+        document.getElementById('text-kor').innerText = v.kor;
+        document.getElementById('ref-kor').innerText = v.korRef;
+        document.getElementById('text-eng').innerText = v.eng;
+        document.getElementById('ref-eng').innerText = v.engRef;
+        
+        // 렌더링 직후 폰트 크기 조정
+        setTimeout(adjustFontSize, 10);
+    }
+
+    function addNewVerse() {
+        const newItem = {
+            week: parseInt(document.getElementById('new-week').value),
+            kor: document.getElementById('new-kor').value,
+            korRef: document.getElementById('new-kor-ref').value,
+            eng: document.getElementById('new-eng').value,
+            engRef: document.getElementById('new-eng-ref').value
+        };
+        if(!newItem.week || !newItem.kor) return alert("데이터를 입력해 주세요.");
+        bibleVerses.push(newItem);
+        bibleVerses.sort((a,b) => a.week - b.week);
+        localStorage.setItem('bibleVerses', JSON.stringify(bibleVerses));
+        alert("저장되었습니다!");
+        location.reload();
+    }
+
+    function changeFont() {
+        const selectedFont = document.getElementById('fontSelect').value;
+        document.body.style.setProperty('--current-font', selectedFont);
+        adjustFontSize();
+    }
+
+    function changeTheme(n) {
+        document.getElementById('card-kor').style.background = `var(--theme-${n})`;
+        document.getElementById('card-eng').style.background = `var(--theme-${n})`;
     }
 
     function moveWeek(dir) {
@@ -126,31 +194,14 @@
         const sw = document.getElementById('searchWeek').value;
         const idx = bibleVerses.findIndex(i => i.week == sw);
         if(idx !== -1) { currentIndex = idx; render(); }
-        else alert(sw + "주차 구절이 아직 등록되지 않았습니다.");
+        else alert("해당 주차를 찾을 수 없습니다.");
     }
 
-    function addNewVerse() {
-        const newItem = {
-            week: parseInt(document.getElementById('new-week').value),
-            kor: document.getElementById('new-kor').value,
-            korRef: document.getElementById('new-kor-ref').value
-        };
-        if(!newItem.week || !newItem.kor) return alert("데이터를 정확히 입력해주세요.");
-        
-        const existingIdx = bibleVerses.findIndex(v => v.week === newItem.week);
-        if(existingIdx > -1) bibleVerses[existingIdx] = newItem;
-        else bibleVerses.push(newItem);
-        
-        bibleVerses.sort((a,b) => a.week - b.week);
-        localStorage.setItem('bibleVerses_2026_v2', JSON.stringify(bibleVerses));
-        alert("저장되었습니다!");
-        location.reload();
+    function openAdmin() {
+        if(prompt("관리자 암호") === "1234") document.getElementById('admin-panel').style.display='block';
     }
 
-    function changeTheme(n) { document.getElementById('card-main').style.background = `var(--theme-${n})`; }
-    function changeFont() { document.body.style.setProperty('--current-font', document.getElementById('fontSelect').value); adjustFontSize(); }
-    function openAdmin() { if(prompt("관리자 비밀번호") === "1234") document.getElementById('admin-panel').style.display='block'; }
-
+    // 초기 실행
     window.onload = render;
     window.onresize = adjustFontSize;
 </script>
