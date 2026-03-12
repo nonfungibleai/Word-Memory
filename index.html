@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>쑥쑥 성구 암송 관리자용</title>
+    <title>쑥쑥 성구 암송 - 자동완성 모드</title>
     <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -23,123 +23,39 @@
             padding: 20px;
         }
 
-        /* 컨트롤 패널 */
-        .top-nav {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
+        .top-nav { width: 100%; max-width: 650px; display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; font-size: 1rem; }
 
-        .search-box {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
-
-        /* 가로형 카드 디자인 */
+        /* 카드 디자인 */
         .card {
-            width: 100%;
-            max-width: 650px;
-            height: 350px;
-            border-radius: 25px;
-            position: relative;
-            padding: 40px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            transition: 0.5s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            color: #333;
-            overflow: hidden;
+            width: 100%; max-width: 650px; min-height: 300px;
+            border-radius: 25px; position: relative; padding: 40px;
+            box-sizing: border-box; display: flex; flex-direction: column;
+            justify-content: center; transition: 0.5s ease;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px;
         }
 
-        .week-badge {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            background: rgba(255,255,255,0.8);
-            padding: 5px 15px;
-            border-radius: 50px;
-            font-family: 'Gaegu';
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
+        .week-badge { position: absolute; top: 25px; left: 25px; background: rgba(255,255,255,0.8); padding: 5px 15px; border-radius: 50px; font-family: 'Gaegu'; font-size: 1.2rem; font-weight: bold; }
+        .version-badge { position: absolute; top: 25px; right: 25px; background: rgba(0,0,0,0.05); padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
+        .verse-content { font-size: 1.7rem; font-weight: 700; line-height: 1.5; margin-bottom: 20px; text-align: center; word-break: keep-all; }
+        .verse-ref { font-size: 1.1rem; text-align: center; font-weight: bold; color: #555; }
 
-        .version-badge {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: rgba(0,0,0,0.1);
-            padding: 5px 12px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
+        .theme-selector { display: flex; gap: 15px; margin-bottom: 25px; }
+        .theme-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        .verse-content {
-            font-size: 1.6rem;
-            font-weight: 700;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            word-break: keep-all;
-            text-align: center;
-        }
-
-        .verse-ref {
-            font-size: 1.1rem;
-            text-align: center;
-            opacity: 0.8;
-        }
-
-        /* 하단 메뉴 */
-        .bottom-menu {
-            margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .theme-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .theme-dot {
-            width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white;
-        }
-
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
+        button { padding: 12px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: 'Nanum Gothic'; }
         .btn-main { background: #333; color: white; }
-        .btn-admin { background: #ff8b94; color: white; }
+        .btn-admin { background: #ff8b94; color: white; margin-top: 10px; }
+        .btn-fetch { background: #4a90e2; color: white; width: 100%; margin-bottom: 10px; }
 
-        /* 관리자 모달 */
+        /* 관리자 패널 */
         #admin-panel {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 30px; border-radius: 20px;
-            box-shadow: 0 0 100px rgba(0,0,0,0.5);
-            z-index: 100; width: 90%; max-width: 400px;
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 30px; border-radius: 25px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 100; width: 90%; max-width: 450px;
         }
-
-        #admin-panel input, #admin-panel textarea {
-            width: 100%; margin-bottom: 10px; padding: 10px; box-sizing: border-box;
-        }
+        #admin-panel input, #admin-panel textarea { width: 100%; margin-bottom: 12px; padding: 12px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; }
+        .loading { font-size: 0.9rem; color: #4a90e2; display: none; margin-bottom: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -156,7 +72,7 @@
     <div class="theme-dot" style="background: var(--theme-4)" onclick="changeTheme(4)"></div>
 </div>
 
-<div class="card" id="card-kor" style="background: var(--theme-1); margin-bottom: 20px;">
+<div class="card" id="card-kor" style="background: var(--theme-1);">
     <div class="week-badge" id="display-week-kor">WEEK 1</div>
     <div class="version-badge">개역한글</div>
     <div class="verse-content" id="text-kor">여호와는 나의 목자시니 내게 부족함이 없으리로다</div>
@@ -170,26 +86,29 @@
     <div class="verse-ref" id="ref-eng">Psalm 23:1</div>
 </div>
 
-<div class="bottom-menu">
-    <button class="btn-main" onclick="moveWeek(-1)">이전 주차</button>
-    <button class="btn-main" onclick="moveWeek(1)">다음 주차</button>
-    <button class="btn-admin" onclick="openAdmin()">성구 추가 (관리자)</button>
+<div style="display: flex; gap: 10px;">
+    <button class="btn-main" onclick="moveWeek(-1)">이전 주</button>
+    <button class="btn-main" onclick="moveWeek(1)">다음 주</button>
 </div>
+<button class="btn-admin" onclick="openAdmin()">⚙️ 성구 추가 (관리자)</button>
 
 <div id="admin-panel">
-    <h3>새로운 성구 추가 ✍️</h3>
-    <input type="number" id="new-week" placeholder="주차 (숫자)">
-    <textarea id="new-kor" placeholder="한글 성구 내용"></textarea>
-    <input type="text" id="new-kor-ref" placeholder="한글 성구 장절 (예: 시편 23:1)">
-    <hr>
-    <textarea id="new-eng" placeholder="English Verse"></textarea>
+    <h3>새 성구 자동 등록 ✨</h3>
+    <input type="number" id="new-week" placeholder="주차 (예: 2)">
+    <input type="text" id="fetch-ref" placeholder="성구 입력 (예: Psalm 23:1)">
+    <button class="btn-fetch" onclick="fetchBibleData()">자동으로 성구 가져오기</button>
+    <div id="loading-msg" class="loading">성경 말씀을 찾는 중...</div>
+    
+    <textarea id="new-kor" placeholder="한글 성구가 여기에 표시됩니다."></textarea>
+    <input type="text" id="new-kor-ref" placeholder="한글 장절">
+    <textarea id="new-eng" placeholder="English verse will appear here."></textarea>
     <input type="text" id="new-eng-ref" placeholder="English Reference">
-    <button class="btn-main" onclick="addNewVerse()">저장하기</button>
-    <button onclick="document.getElementById('admin-panel').style.display='none'">닫기</button>
+    
+    <button class="btn-main" style="width: 100%; background: #ff8b94;" onclick="addNewVerse()">저장하기</button>
+    <button style="width: 100%; margin-top: 10px; background: #eee;" onclick="document.getElementById('admin-panel').style.display='none'">닫기</button>
 </div>
 
 <script>
-    // 초기 기본 데이터
     const defaultData = [
         { week: 1, kor: "여호와는 나의 목자시니 내게 부족함이 없으리로다", korRef: "시편 23:1", eng: "The LORD is my shepherd; I shall not want.", engRef: "Psalm 23:1" }
     ];
@@ -199,8 +118,6 @@
 
     function render() {
         const v = bibleVerses[currentIndex];
-        if(!v) return;
-
         document.getElementById('display-week-kor').innerText = `WEEK ${v.week}`;
         document.getElementById('display-week-eng').innerText = `WEEK ${v.week}`;
         document.getElementById('text-kor').innerText = v.kor;
@@ -209,36 +126,35 @@
         document.getElementById('ref-eng').innerText = v.engRef;
     }
 
-    function moveWeek(dir) {
-        currentIndex += dir;
-        if(currentIndex < 0) currentIndex = 0;
-        if(currentIndex >= bibleVerses.length) currentIndex = bibleVerses.length - 1;
-        render();
-    }
+    // [핵심 기능] 성경 API 호출
+    async function fetchBibleData() {
+        const ref = document.getElementById('fetch-ref').value;
+        if(!ref) return alert("장절을 입력하세요! (예: John 3:16)");
+        
+        const loading = document.getElementById('loading-msg');
+        loading.style.display = 'block';
 
-    function searchVerse() {
-        const sw = document.getElementById('searchWeek').value;
-        const index = bibleVerses.findIndex(i => i.week == sw);
-        if(index !== -1) {
-            currentIndex = index;
-            render();
-        } else {
-            alert("해당 주차의 성구가 아직 없어요!");
-        }
-    }
+        try {
+            // 영어 ESV (Bible-api 사용)
+            const engRes = await fetch(`https://bible-api.com/${ref}?translation=esv`);
+            const engData = await engRes.json();
 
-    function changeTheme(num) {
-        const theme = `var(--theme-${num})`;
-        document.getElementById('card-kor').style.background = theme;
-        document.getElementById('card-eng').style.background = theme;
-    }
+            // 한글 (Bible-api에서 KRV 지원)
+            const korRes = await fetch(`https://bible-api.com/${ref}?translation=krv`);
+            const korData = await korRes.json();
 
-    function openAdmin() {
-        const pw = prompt("관리자 비밀번호를 입력하세요. (초기: 1234)");
-        if(pw === "1234") {
-            document.getElementById('admin-panel').style.display = 'block';
-        } else {
-            alert("비밀번호가 틀렸습니다.");
+            if(engData.text) {
+                document.getElementById('new-eng').value = engData.text.trim();
+                document.getElementById('new-eng-ref').value = engData.reference;
+                document.getElementById('new-kor').value = korData.text.trim();
+                document.getElementById('new-kor-ref').value = korData.reference;
+            } else {
+                alert("성구를 찾을 수 없습니다. 영문 이름으로 시도해보세요. (예: Genesis 1:1)");
+            }
+        } catch (e) {
+            alert("데이터를 가져오는 중 오류가 발생했습니다.");
+        } finally {
+            loading.style.display = 'none';
         }
     }
 
@@ -250,20 +166,36 @@
             eng: document.getElementById('new-eng').value,
             engRef: document.getElementById('new-eng-ref').value
         };
-
-        if(!newItem.week || !newItem.kor) return alert("내용을 입력해주세요.");
-
+        if(!newItem.week || !newItem.kor) return alert("데이터를 모두 채워주세요.");
         bibleVerses.push(newItem);
-        bibleVerses.sort((a, b) => a.week - b.week);
+        bibleVerses.sort((a,b) => a.week - b.week);
         localStorage.setItem('bibleVerses', JSON.stringify(bibleVerses));
-        
-        alert("성구가 추가되었습니다!");
-        document.getElementById('admin-panel').style.display = 'none';
+        alert("저장 완료!");
         location.reload();
+    }
+
+    function searchVerse() {
+        const sw = document.getElementById('searchWeek').value;
+        const idx = bibleVerses.findIndex(i => i.week == sw);
+        if(idx !== -1) { currentIndex = idx; render(); }
+        else { alert("해당 주차를 찾을 수 없습니다."); }
+    }
+
+    function moveWeek(dir) {
+        currentIndex = Math.max(0, Math.min(bibleVerses.length - 1, currentIndex + dir));
+        render();
+    }
+
+    function changeTheme(n) {
+        document.getElementById('card-kor').style.background = `var(--theme-${n})`;
+        document.getElementById('card-eng').style.background = `var(--theme-${n})`;
+    }
+
+    function openAdmin() {
+        if(prompt("관리자 암호") === "1234") document.getElementById('admin-panel').style.display='block';
     }
 
     render();
 </script>
-
 </body>
 </html>
