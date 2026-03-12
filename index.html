@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>어린이 성구 암송 카드</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Gothic+Coding&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffcfdf;
+            --secondary-color: #fefdca;
+            --accent-color: #aee1e1;
+            --text-color: #444;
+        }
+
+        body {
+            font-family: 'Gaegu', cursive;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5rem; color: #ff8b94; margin: 10px 0; }
+
+        /* 카드 스타일 */
+        .card-container {
+            perspective: 1000px;
+            width: 90%;
+            max-width: 400px;
+            height: 500px;
+            cursor: pointer;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 30px;
+        }
+
+        /* 배경 이미지 적용 (Unsplash 무료 이미지) */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 30px;
+            border: 8px solid white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-front {
+            background-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), 
+                              url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=500&q=80');
+        }
+
+        .card-back {
+            background-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), 
+                              url('https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=500&q=80');
+            transform: rotateY(180deg);
+        }
+
+        .verse-text { font-size: 1.8rem; line-height: 1.5; margin-bottom: 20px; word-break: keep-all; }
+        .reference { font-size: 1.2rem; color: #888; font-weight: bold; }
+        .version-label { position: absolute; top: 20px; right: 20px; background: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; border: 1px solid #ddd; }
+
+        /* 컨트롤 영역 */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-family: 'Gaegu';
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-prev { background-color: var(--accent-color); }
+        .btn-next { background-color: var(--primary-color); }
+        .btn-flip { background-color: var(--secondary-color); }
+
+        button:active { transform: translateY(3px); }
+
+        /* 주차 리스트 */
+        .history {
+            margin-top: 40px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .history h3 { border-bottom: 2px solid #ffcfdf; padding-bottom: 5px; }
+
+        .week-item {
+            background: white;
+            padding: 10px 15px;
+            margin: 5px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card.flipped { transform: rotateY(180deg); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div id="week-display">1주차 암송</div>
+    <h1>📖 쑥쑥 성경암송</h1>
+</header>
+
+<div class="card-container" onclick="flipCard()">
+    <div class="card" id="main-card">
+        <div class="card-face card-front">
+            <span class="version-label">개역한글</span>
+            <div class="verse-text" id="kor-verse">여호와는 나의 목자시니 내게 부족함이 없으리로다</div>
+            <div class="reference" id="kor-ref">시편 23:1</div>
+        </div>
+        <div class="card-face card-back">
+            <span class="version-label">ESV</span>
+            <div class="verse-text" id="eng-verse">The LORD is my shepherd; I shall not want.</div>
+            <div class="reference" id="eng-ref">Psalm 23:1</div>
+        </div>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn-prev" onclick="changeWeek(-1)">이전 주</button>
+    <button class="btn-flip">꾹 눌러 번역보기</button>
+    <button class="btn-next" onclick="changeWeek(1)">다음 주</button>
+</div>
+
+<div class="history">
+    <h3>내 암송 기록 ✨</h3>
+    <div id="history-list">
+        </div>
+</div>
+
+<script>
+    const bibleData = [
+        { week: 1, kor: "여호와는 나의 목자시니 내게 부족함이 없으리로다", korRef: "시편 23:1", eng: "The LORD is my shepherd; I shall not want.", engRef: "Psalm 23:1" },
+        { week: 2, kor: "태초에 하나님이 천지를 창조하시니라", korRef: "창세기 1:1", eng: "In the beginning, God created the heavens and the earth.", engRef: "Genesis 1:1" },
+        { week: 3, kor: "너희는 세상의 빛이라", korRef: "마태복음 5:14", eng: "You are the light of the world.", engRef: "Matthew 5:14" },
+        { week: 4, kor: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라", korRef: "데살로니가전서 5:16-18", eng: "Rejoice always, pray without ceasing, give thanks in all circumstances.", engRef: "1 Thess 5:16-18" }
+    ];
+
+    let currentWeekIndex = 0;
+
+    function updateCard() {
+        const data = bibleData[currentWeekIndex];
+        document.getElementById('week-display').innerText = `${data.week}주차 암송`;
+        document.getElementById('kor-verse').innerText = data.kor;
+        document.getElementById('kor-ref').innerText = data.korRef;
+        document.getElementById('eng-verse').innerText = data.eng;
+        document.getElementById('eng-ref').innerText = data.engRef;
+        
+        // 카드 뒤집기 초기화
+        document.getElementById('main-card').classList.remove('flipped');
+        saveProgress(data.week);
+    }
+
+    function flipCard() {
+        document.getElementById('main-card').classList.toggle('flipped');
+    }
+
+    function changeWeek(step) {
+        currentWeekIndex += step;
+        if (currentWeekIndex < 0) currentWeekIndex = 0;
+        if (currentWeekIndex >= bibleData.length) currentWeekIndex = bibleData.length - 1;
+        updateCard();
+    }
+
+    function saveProgress(week) {
+        let history = JSON.parse(localStorage.getItem('bibleHistory')) || [];
+        if (!history.includes(week)) {
+            history.push(week);
+            localStorage.setItem('bibleHistory', JSON.stringify(history.sort((a,b) => a-b)));
+        }
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('bibleHistory')) || [];
+        const listContainer = document.getElementById('history-list');
+        listContainer.innerHTML = history.map(w => `
+            <div class="week-item">
+                <span>⭐ ${w}주차 암송 완료!</span>
+                <small>참 잘했어요</small>
+            </div>
+        `).join('');
+    }
+
+    // 초기 실행
+    updateCard();
+</script>
+
+</body>
+</html>
