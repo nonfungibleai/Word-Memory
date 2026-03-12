@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>쑥쑥 성구 암송 - 자동완성 모드</title>
+    <title>쑥쑥 성구 암송 - 자동완성 강화판</title>
     <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,50 +12,22 @@
             --theme-3: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             --theme-4: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
-
-        body {
-            font-family: 'Nanum Gothic', sans-serif;
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
-
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
         .top-nav { width: 100%; max-width: 650px; display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; font-size: 1rem; }
-
-        /* 카드 디자인 */
-        .card {
-            width: 100%; max-width: 650px; min-height: 300px;
-            border-radius: 25px; position: relative; padding: 40px;
-            box-sizing: border-box; display: flex; flex-direction: column;
-            justify-content: center; transition: 0.5s ease;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px;
-        }
-
+        .search-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; }
+        .card { width: 100%; max-width: 650px; min-height: 280px; border-radius: 25px; position: relative; padding: 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; transition: 0.5s ease; box-shadow: 0 15px 35px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px; }
         .week-badge { position: absolute; top: 25px; left: 25px; background: rgba(255,255,255,0.8); padding: 5px 15px; border-radius: 50px; font-family: 'Gaegu'; font-size: 1.2rem; font-weight: bold; }
         .version-badge { position: absolute; top: 25px; right: 25px; background: rgba(0,0,0,0.05); padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
-        .verse-content { font-size: 1.7rem; font-weight: 700; line-height: 1.5; margin-bottom: 20px; text-align: center; word-break: keep-all; }
+        .verse-content { font-size: 1.6rem; font-weight: 700; line-height: 1.5; margin-bottom: 20px; text-align: center; word-break: keep-all; }
         .verse-ref { font-size: 1.1rem; text-align: center; font-weight: bold; color: #555; }
-
-        .theme-selector { display: flex; gap: 15px; margin-bottom: 25px; }
+        .theme-selector { display: flex; gap: 15px; margin-bottom: 20px; }
         .theme-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-        button { padding: 12px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: 'Nanum Gothic'; }
+        button { padding: 12px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; }
         .btn-main { background: #333; color: white; }
         .btn-admin { background: #ff8b94; color: white; margin-top: 10px; }
-        .btn-fetch { background: #4a90e2; color: white; width: 100%; margin-bottom: 10px; }
-
-        /* 관리자 패널 */
-        #admin-panel {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 30px; border-radius: 25px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 100; width: 90%; max-width: 450px;
-        }
-        #admin-panel input, #admin-panel textarea { width: 100%; margin-bottom: 12px; padding: 12px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; }
-        .loading { font-size: 0.9rem; color: #4a90e2; display: none; margin-bottom: 10px; text-align: center; }
+        .btn-fetch { background: #4a90e2; color: white; width: 100%; margin-bottom: 15px; }
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 100; width: 90%; max-width: 450px; overflow-y: auto; max-height: 90vh; }
+        #admin-panel input, #admin-panel textarea { width: 100%; margin-bottom: 10px; padding: 12px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -75,33 +47,35 @@
 <div class="card" id="card-kor" style="background: var(--theme-1);">
     <div class="week-badge" id="display-week-kor">WEEK 1</div>
     <div class="version-badge">개역한글</div>
-    <div class="verse-content" id="text-kor">여호와는 나의 목자시니 내게 부족함이 없으리로다</div>
-    <div class="verse-ref" id="ref-kor">시편 23:1</div>
+    <div class="verse-content" id="text-kor">말씀을 등록해 주세요.</div>
+    <div class="verse-ref" id="ref-kor"></div>
 </div>
 
 <div class="card" id="card-eng" style="background: var(--theme-1)">
     <div class="week-badge" id="display-week-eng">WEEK 1</div>
     <div class="version-badge">ESV</div>
-    <div class="verse-content" id="text-eng">The LORD is my shepherd; I shall not want.</div>
-    <div class="verse-ref" id="ref-eng">Psalm 23:1</div>
+    <div class="verse-content" id="text-eng">Please register a verse.</div>
+    <div class="verse-ref" id="ref-eng"></div>
 </div>
 
 <div style="display: flex; gap: 10px;">
     <button class="btn-main" onclick="moveWeek(-1)">이전 주</button>
     <button class="btn-main" onclick="moveWeek(1)">다음 주</button>
 </div>
-<button class="btn-admin" onclick="openAdmin()">⚙️ 성구 추가 (관리자)</button>
+<button class="btn-admin" onclick="openAdmin()">⚙️ 성구 관리자</button>
 
 <div id="admin-panel">
-    <h3>새 성구 자동 등록 ✨</h3>
-    <input type="number" id="new-week" placeholder="주차 (예: 2)">
-    <input type="text" id="fetch-ref" placeholder="성구 입력 (예: Psalm 23:1)">
+    <h3>성구 등록 (한글/영문 지원) ✨</h3>
+    <input type="number" id="new-week" placeholder="주차 (숫자)">
+    <input type="text" id="fetch-ref" placeholder="장절 입력 (예: 시편 23:1 또는 Psalm 23:1)">
     <button class="btn-fetch" onclick="fetchBibleData()">자동으로 성구 가져오기</button>
-    <div id="loading-msg" class="loading">성경 말씀을 찾는 중...</div>
     
-    <textarea id="new-kor" placeholder="한글 성구가 여기에 표시됩니다."></textarea>
-    <input type="text" id="new-kor-ref" placeholder="한글 장절">
-    <textarea id="new-eng" placeholder="English verse will appear here."></textarea>
+    <label>한글 성구</label>
+    <textarea id="new-kor" rows="3"></textarea>
+    <input type="text" id="new-kor-ref" placeholder="한글 장절명">
+    
+    <label>영문 성구 (ESV)</label>
+    <textarea id="new-eng" rows="3"></textarea>
     <input type="text" id="new-eng-ref" placeholder="English Reference">
     
     <button class="btn-main" style="width: 100%; background: #ff8b94;" onclick="addNewVerse()">저장하기</button>
@@ -109,52 +83,61 @@
 </div>
 
 <script>
-    const defaultData = [
+    // 한글 도서명을 영어로 변환하는 사전
+    const bibleMap = {
+        "창세기": "Genesis", "출애굽기": "Exodus", "레위기": "Leviticus", "민수기": "Numbers", "신명기": "Deuteronomy",
+        "여호수아": "Joshua", "사사기": "Judges", "루기": "Ruth", "사무엘상": "1 Samuel", "사무엘하": "2 Samuel",
+        "열왕기상": "1 Kings", "열왕기하": "2 Kings", "역대상": "1 Chronicles", "역대하": "2 Chronicles",
+        "에스라": "Ezra", "느헤미야": "Nehemiah", "에스더": "Esther", "욥기": "Job", "시편": "Psalms",
+        "잠언": "Proverbs", "전도서": "Ecclesiastes", "아가": "Song of Solomon", "이사야": "Isaiah",
+        "예레미야": "Jeremiah", "예레미야애가": "Lamentations", "에스겔": "Ezekiel", "다니엘": "Daniel",
+        "호세아": "Hosea", "요엘": "Joel", "아모스": "Amos", "오바댜": "Obadiah", "요나": "Jonah",
+        "미가": "Micah", "나훔": "Nahum", "하박국": "Habakkuk", "스바냐": "Zephaniah", "학개": "Haggai",
+        "스가랴": "Zechariah", "말라기": "Malachi", "마태복음": "Matthew", "마가복음": "Mark", "누가복음": "Luke",
+        "요한복음": "John", "사도행전": "Acts", "로마서": "Romans", "고린도전서": "1 Corinthians", "고린도후서": "2 Corinthians",
+        "갈라디아서": "Galatians", "에베소서": "Ephesians", "빌립보서": "Philippians", "골로새서": "Colossians",
+        "데살로니가전서": "1 Thessalonians", "데살로니가후서": "2 Thessalonians", "디모데전서": "1 Timothy",
+        "디모데후서": "2 Timothy", "디도서": "Titus", "빌레몬서": "Philemon", "히브리서": "Hebrews",
+        "야고보서": "James", "베드로전서": "1 Peter", "베드로후서": "2 Peter", "요한1서": "1 John",
+        "요한2서": "2 John", "요한3서": "3 John", "유다서": "Jude", "요한계시록": "Revelation"
+    };
+
+    let bibleVerses = JSON.parse(localStorage.getItem('bibleVerses')) || [
         { week: 1, kor: "여호와는 나의 목자시니 내게 부족함이 없으리로다", korRef: "시편 23:1", eng: "The LORD is my shepherd; I shall not want.", engRef: "Psalm 23:1" }
     ];
-
-    let bibleVerses = JSON.parse(localStorage.getItem('bibleVerses')) || defaultData;
     let currentIndex = 0;
 
-    function render() {
-        const v = bibleVerses[currentIndex];
-        document.getElementById('display-week-kor').innerText = `WEEK ${v.week}`;
-        document.getElementById('display-week-eng').innerText = `WEEK ${v.week}`;
-        document.getElementById('text-kor').innerText = v.kor;
-        document.getElementById('ref-kor').innerText = v.korRef;
-        document.getElementById('text-eng').innerText = v.eng;
-        document.getElementById('ref-eng').innerText = v.engRef;
-    }
-
-    // [핵심 기능] 성경 API 호출
     async function fetchBibleData() {
-        const ref = document.getElementById('fetch-ref').value;
-        if(!ref) return alert("장절을 입력하세요! (예: John 3:16)");
-        
-        const loading = document.getElementById('loading-msg');
-        loading.style.display = 'block';
+        let ref = document.getElementById('fetch-ref').value.trim();
+        if(!ref) return alert("장절을 입력하세요! (예: 시편 23:1)");
+
+        // 한글 도서명을 영어로 치환
+        for (let ko in bibleMap) {
+            if (ref.includes(ko)) {
+                ref = ref.replace(ko, bibleMap[ko]);
+                break;
+            }
+        }
 
         try {
-            // 영어 ESV (Bible-api 사용)
+            // 영어 ESV
             const engRes = await fetch(`https://bible-api.com/${ref}?translation=esv`);
             const engData = await engRes.json();
-
-            // 한글 (Bible-api에서 KRV 지원)
+            
+            // 한글 KRV (개역한글과 유사)
             const korRes = await fetch(`https://bible-api.com/${ref}?translation=krv`);
             const korData = await korRes.json();
 
-            if(engData.text) {
-                document.getElementById('new-eng').value = engData.text.trim();
+            if (engData.text) {
+                document.getElementById('new-eng').value = engData.text.replace(/\n/g, ' ').trim();
                 document.getElementById('new-eng-ref').value = engData.reference;
-                document.getElementById('new-kor').value = korData.text.trim();
+                document.getElementById('new-kor').value = korData.text.replace(/\n/g, ' ').trim();
                 document.getElementById('new-kor-ref').value = korData.reference;
             } else {
-                alert("성구를 찾을 수 없습니다. 영문 이름으로 시도해보세요. (예: Genesis 1:1)");
+                alert("성구를 찾지 못했습니다. '시편 23:1' 처럼 띄어쓰기를 확인해 보세요.");
             }
         } catch (e) {
-            alert("데이터를 가져오는 중 오류가 발생했습니다.");
-        } finally {
-            loading.style.display = 'none';
+            alert("서버 통신 오류가 발생했습니다. 잠시 후 다시 시도하거나 직접 입력해 주세요.");
         }
     }
 
@@ -166,24 +149,34 @@
             eng: document.getElementById('new-eng').value,
             engRef: document.getElementById('new-eng-ref').value
         };
-        if(!newItem.week || !newItem.kor) return alert("데이터를 모두 채워주세요.");
+        if(!newItem.week || !newItem.kor) return alert("내용을 입력해주세요.");
         bibleVerses.push(newItem);
         bibleVerses.sort((a,b) => a.week - b.week);
         localStorage.setItem('bibleVerses', JSON.stringify(bibleVerses));
-        alert("저장 완료!");
+        alert("성구가 저장되었습니다!");
         location.reload();
+    }
+
+    function render() {
+        const v = bibleVerses[currentIndex];
+        document.getElementById('display-week-kor').innerText = `WEEK ${v.week}`;
+        document.getElementById('display-week-eng').innerText = `WEEK ${v.week}`;
+        document.getElementById('text-kor').innerText = v.kor;
+        document.getElementById('ref-kor').innerText = v.korRef;
+        document.getElementById('text-eng').innerText = v.eng;
+        document.getElementById('ref-eng').innerText = v.engRef;
+    }
+
+    function moveWeek(dir) {
+        currentIndex = Math.max(0, Math.min(bibleVerses.length - 1, currentIndex + dir));
+        render();
     }
 
     function searchVerse() {
         const sw = document.getElementById('searchWeek').value;
         const idx = bibleVerses.findIndex(i => i.week == sw);
         if(idx !== -1) { currentIndex = idx; render(); }
-        else { alert("해당 주차를 찾을 수 없습니다."); }
-    }
-
-    function moveWeek(dir) {
-        currentIndex = Math.max(0, Math.min(bibleVerses.length - 1, currentIndex + dir));
-        render();
+        else alert("해당 주차를 찾을 수 없습니다.");
     }
 
     function changeTheme(n) {
