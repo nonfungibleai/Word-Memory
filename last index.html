@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 쑥쑥 성구암송 매니저</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --theme-1: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --theme-2: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --theme-3: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --theme-4: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --current-font: 'Nanum Gothic', sans-serif;
+        }
+        body { font-family: 'Nanum Gothic', sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        
+        .settings-panel { width: 100%; max-width: 600px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .theme-dot { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 2px solid #ddd; }
+        select { padding: 8px; border-radius: 10px; border: 1px solid #ddd; font-family: inherit; }
+
+        .top-nav { width: 100%; max-width: 600px; display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd; }
+        
+        .card { width: 100%; max-width: 600px; height: 350px; border-radius: 25px; position: relative; padding: 60px 40px 40px 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; margin-bottom: 20px; overflow: hidden; font-family: var(--current-font); }
+        .week-badge { position: absolute; top: 20px; left: 25px; background: rgba(255,255,255,0.9); padding: 5px 15px; border-radius: 10px; font-size: 1rem; font-weight: bold; border: 1px solid rgba(0,0,0,0.1); }
+        .year-badge { position: absolute; top: 20px; right: 25px; background: #333; color: white; padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
+        .verse-container { width: 100%; height: 200px; display: flex; justify-content: center; align-items: center; text-align: center; }
+        .verse-content { font-weight: 700; line-height: 1.6; word-break: keep-all; width: 100%; color: #222; }
+        .verse-ref { font-size: 1.2rem; margin-top: 20px; font-weight: bold; color: #555; }
+        
+        button { padding: 14px 24px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.2s; }
+        .btn-main { background: #333; color: white; }
+        .btn-admin { background: #ff8b94; color: white; margin-top: 15px; }
+        
+        #admin-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.3); z-index: 100; width: 90%; max-width: 500px; overflow-y: auto; max-height: 90vh; }
+        .admin-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: none; border: none; font-size: 0.9rem; cursor: pointer; font-weight: bold; color: #999; }
+        .tab-btn.active { border-bottom: 3px solid #ff8b94; color: #ff8b94; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .list-container { text-align: left; background: #f9f9f9; padding: 15px; border-radius: 15px; }
+        .student-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .stat-item { margin-bottom: 15px; }
+        .stat-info { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #ff8b94; width: 0%; transition: width 0.5s ease-out; }
+
+        #admin-panel input, #admin-panel textarea { width: 100%; margin-bottom: 10px; padding: 12px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="settings-panel">
+    <div style="display: flex; gap: 8px;">
+        <div class="theme-dot" style="background: var(--theme-1)" onclick="changeTheme(1)"></div>
+        <div class="theme-dot" style="background: var(--theme-2)" onclick="changeTheme(2)"></div>
+        <div class="theme-dot" style="background: var(--theme-3)" onclick="changeTheme(3)"></div>
+        <div class="theme-dot" style="background: var(--theme-4)" onclick="changeTheme(4)"></div>
+    </div>
+    <select id="fontSelect" onchange="changeFont()">
+        <option value="'Nanum Gothic', sans-serif">나눔고딕 (정자체)</option>
+        <option value="'Nanum Myeongjo', serif">나눔명조 (단정함)</option>
+        <option value="'Noto Sans KR', sans-serif">본고딕 (현대적)</option>
+    </select>
+</div>
+
+<div class="top-nav">
+    <input type="number" id="searchWeek" class="search-box" placeholder="주차 검색 (예: 1)">
+    <button class="btn-main" onclick="searchVerse()">이동</button>
+</div>
+
+<div class="card" id="card-main" style="background: var(--theme-1);">
+    <div class="week-badge" id="display-week">1주차</div>
+    <div class="year-badge">2026년</div>
+    <div class="verse-container">
+        <div class="verse-content" id="text-main">등록된 성구가 없습니다.</div>
+    </div>
+    <div class="verse-ref" id="ref-main">관리자 모드에서 추가해 주세요.</div>
+</div>
+
+<div style="display: flex; gap: 10px;">
+    <button class="btn-main" onclick="moveWeek(-1)">이전</button>
+    <button class="btn-main" onclick="moveWeek(1)">다음</button>
+</div>
+
+<button class="btn-admin" onclick="openAdmin()">⚙️ 관리자 매니저</button>
+
+<div id="admin-panel">
+    <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('add-verse')">성구 등록</button>
+        <button class="tab-btn" onclick="switchTab('check-student')">암송 체크</button>
+        <button class="tab-btn" onclick="switchTab('view-stats')">암송 통계</button>
+    </div>
+
+    <div id="add-verse" class="tab-content active">
+        <input type="number" id="new-week" placeholder="주차 (숫자)">
+        <textarea id="new-kor" rows="5" placeholder="성구 본문"></textarea>
+        <input type="text" id="new-kor-ref" placeholder="장절 (예: 시편 23:1)">
+        <button class="btn-main" style="width: 100%; background: #ff8b94;" onclick="addNewVerse()">저장하기</button>
+    </div>
+
+    <div id="check-student" class="tab-content">
+        <p style="font-size: 0.9rem; color: #666;">선택 주차: <b id="check-week-label">1주차</b></p>
+        <div class="list-container" id="student-list-container"></div>
+        <button class="btn-main" style="width: 100%; background: #4a90e2; margin-top: 15px;" onclick="saveCheckList()">저장하기</button>
+    </div>
+
+    <div id="view-stats" class="tab-content">
+        <div class="list-container" id="stats-container"></div>
+    </div>
+
+    <button style="width: 100%; margin-top: 15px; background: #eee; padding: 10px; border-radius: 10px;" onclick="closeAdmin()">닫기</button>
+</div>
+
+<script>
+    // 명단 업데이트: 정다은 추가
+    const rawStudents = ["김결","김설","김율","이신혁","이규원","이효린","정도진","김윤후","심성민","장우진","장서진","김하윤", "정다은"];
+    const students = rawStudents.sort();
+
+    let bibleVerses = JSON.parse(localStorage.getItem('verses_2026')) || [];
+    let checkData = JSON.parse(localStorage.getItem('check_2026')) || {}; 
+    let currentIndex = 0;
+
+    function render() {
+        if (bibleVerses.length === 0) {
+            document.getElementById('text-main').innerText = "등록된 성구가 없습니다.";
+            document.getElementById('ref-main').innerText = "관리자 모드에서 추가해 주세요.";
+            return;
+        }
+        const v = bibleVerses[currentIndex];
+        document.getElementById('display-week').innerText = `${v.week}주차`;
+        document.getElementById('text-main').innerText = v.kor;
+        document.getElementById('ref-main').innerText = v.korRef;
+        setTimeout(adjustFontSize, 30);
+    }
+
+    function adjustFontSize() {
+        const textElement = document.getElementById('text-main');
+        let fontSize = 2.2;
+        textElement.style.fontSize = fontSize + "rem";
+        while (textElement.scrollHeight > 200 && fontSize > 0.9) {
+            fontSize -= 0.1;
+            textElement.style.fontSize = fontSize + "rem";
+        }
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        if(tabId === 'check-student') loadCheckList();
+        if(tabId === 'view-stats') loadStatistics();
+    }
+
+    function loadCheckList() {
+        if(bibleVerses.length === 0) {
+            document.getElementById('student-list-container').innerHTML = "성구를 먼저 등록해 주세요.";
+            return;
+        }
+        const currentWeek = bibleVerses[currentIndex].week;
+        document.getElementById('check-week-label').innerText = currentWeek + "주차";
+        const weekChecks = checkData[currentWeek] || [];
+        
+        let html = '';
+        students.forEach(name => {
+            const checked = weekChecks.includes(name) ? 'checked' : '';
+            html += `<div class="student-item">
+                <label style="flex:1; cursor:pointer;" for="st-${name}">${name}</label>
+                <input type="checkbox" id="st-${name}" value="${name}" ${checked}>
+            </div>`;
+        });
+        document.getElementById('student-list-container').innerHTML = html;
+    }
+
+    function saveCheckList() {
+        const currentWeek = bibleVerses[currentIndex].week;
+        const checkedStudents = [];
+        document.querySelectorAll('#student-list-container input:checked').forEach(input => {
+            checkedStudents.push(input.value);
+        });
+        checkData[currentWeek] = checkedStudents;
+        localStorage.setItem('check_2026', JSON.stringify(checkData));
+        alert("저장되었습니다!");
+    }
+
+    function loadStatistics() {
+        const totalWeeks = bibleVerses.length;
+        if(totalWeeks === 0) {
+            document.getElementById('stats-container').innerHTML = "등록된 성구가 없습니다.";
+            return;
+        }
+
+        let html = '';
+        students.forEach(name => {
+            let count = 0;
+            for(let week in checkData) {
+                if(checkData[week].includes(name)) count++;
+            }
+            const percent = (count / totalWeeks) * 100;
+            html += `<div class="stat-item">
+                <div class="stat-info">
+                    <span>${name}</span>
+                    <span>${count} / ${totalWeeks}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percent}%"></div>
+                </div>
+            </div>`;
+        });
+        document.getElementById('stats-container').innerHTML = html;
+    }
+
+    function addNewVerse() {
+        const newItem = {
+            week: parseInt(document.getElementById('new-week').value),
+            kor: document.getElementById('new-kor').value,
+            korRef: document.getElementById('new-kor-ref').value
+        };
+        if(!newItem.week || !newItem.kor) return alert("데이터를 입력해 주세요.");
+        const idx = bibleVerses.findIndex(v => v.week === newItem.week);
+        if(idx > -1) bibleVerses[idx] = newItem;
+        else bibleVerses.push(newItem);
+        bibleVerses.sort((a,b) => a.week - b.week);
+        localStorage.setItem('verses_2026', JSON.stringify(bibleVerses));
+        alert("성구가 저장되었습니다.");
+        location.reload();
+    }
+
+    function searchVerse() {
+        const sw = document.getElementById('searchWeek').value;
+        const idx = bibleVerses.findIndex(i => i.week == sw);
+        if(idx !== -1) { currentIndex = idx; render(); }
+        else alert("해당 주차를 찾을 수 없습니다.");
+    }
+
+    function moveWeek(dir) {
+        currentIndex = Math.max(0, Math.min(bibleVerses.length - 1, currentIndex + dir));
+        render();
+    }
+
+    function changeTheme(n) { document.getElementById('card-main').style.background = `var(--theme-${n})`; }
+    function changeFont() { document.body.style.setProperty('--current-font', document.getElementById('fontSelect').value); adjustFontSize(); }
+    function openAdmin() { if(prompt("관리자 비밀번호") === "1234") document.getElementById('admin-panel').style.display='block'; }
+    function closeAdmin() { document.getElementById('admin-panel').style.display='none'; }
+
+    window.onload = render;
+</script>
+</body>
+</html>
