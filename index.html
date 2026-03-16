@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 쑥쑥 성구암송 매니저</title>
+    <title>2026 쑥쑥 성구암송 매니저 (실시간)</title>
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --theme-1: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
@@ -75,9 +79,9 @@
     <div class="week-badge" id="display-week">1주차</div>
     <div class="year-badge">2026년</div>
     <div class="verse-container">
-        <div class="verse-content" id="text-main">등록된 성구가 없습니다.</div>
+        <div class="verse-content" id="text-main">데이터를 불러오는 중...</div>
     </div>
-    <div class="verse-ref" id="ref-main">관리자 모드에서 추가해 주세요.</div>
+    <div class="verse-ref" id="ref-main"></div>
 </div>
 
 <div style="display: flex; gap: 10px;">
@@ -115,20 +119,43 @@
 </div>
 
 <script>
-    // 명단 업데이트: 정다은 추가
+    // 파이어베이스 초기화 설정
+    const firebaseConfig = {
+        apiKey: "AIzaSyALYtyEnlAPJpcUyrkXj6OYnVnaTaQDatw",
+        authDomain: "word-memory-2026.firebaseapp.com",
+        databaseURL: "https://word-memory-2026-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "word-memory-2026",
+        storageBucket: "word-memory-2026.firebasestorage.app",
+        messagingSenderId: "148806947295",
+        appId: "1:148806947295:web:4c5c175b00914b55fcf46a"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // 학생 명단 (가나다순 자동 정렬)
     const rawStudents = ["김결","김설","김율","이신혁","이규원","이효린","정도진","김윤후","심성민","장우진","장서진","김하윤", "정다은"];
     const students = rawStudents.sort();
 
-    let bibleVerses = JSON.parse(localStorage.getItem('verses_2026')) || [];
-    let checkData = JSON.parse(localStorage.getItem('check_2026')) || {}; 
+    let bibleVerses = [];
+    let checkData = {}; 
     let currentIndex = 0;
 
-    function render() {
-        if (bibleVerses.length === 0) {
+    // 파이어베이스 데이터 실시간 리스너
+    database.ref('appData').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            bibleVerses = data.verses || [];
+            checkData = data.checks || {};
+            render();
+        } else {
             document.getElementById('text-main').innerText = "등록된 성구가 없습니다.";
             document.getElementById('ref-main').innerText = "관리자 모드에서 추가해 주세요.";
-            return;
         }
+    });
+
+    function render() {
+        if (bibleVerses.length === 0) return;
         const v = bibleVerses[currentIndex];
         document.getElementById('display-week').innerText = `${v.week}주차`;
         document.getElementById('text-main').innerText = v.kor;
@@ -151,15 +178,13 @@
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         event.currentTarget.classList.add('active');
+        
         if(tabId === 'check-student') loadCheckList();
         if(tabId === 'view-stats') loadStatistics();
     }
 
     function loadCheckList() {
-        if(bibleVerses.length === 0) {
-            document.getElementById('student-list-container').innerHTML = "성구를 먼저 등록해 주세요.";
-            return;
-        }
+        if(bibleVerses.length === 0) return;
         const currentWeek = bibleVerses[currentIndex].week;
         document.getElementById('check-week-label').innerText = currentWeek + "주차";
         const weekChecks = checkData[currentWeek] || [];
@@ -182,8 +207,11 @@
             checkedStudents.push(input.value);
         });
         checkData[currentWeek] = checkedStudents;
-        localStorage.setItem('check_2026', JSON.stringify(checkData));
-        alert("저장되었습니다!");
+        
+        // 파이어베이스에 체크 현황 저장
+        database.ref('appData/checks').set(checkData).then(() => {
+            alert("암송 현황이 실시간으로 저장되었습니다!");
+        });
     }
 
     function loadStatistics() {
@@ -200,6 +228,7 @@
                 if(checkData[week].includes(name)) count++;
             }
             const percent = (count / totalWeeks) * 100;
+
             html += `<div class="stat-item">
                 <div class="stat-info">
                     <span>${name}</span>
@@ -220,13 +249,18 @@
             korRef: document.getElementById('new-kor-ref').value
         };
         if(!newItem.week || !newItem.kor) return alert("데이터를 입력해 주세요.");
+        
         const idx = bibleVerses.findIndex(v => v.week === newItem.week);
         if(idx > -1) bibleVerses[idx] = newItem;
         else bibleVerses.push(newItem);
+        
         bibleVerses.sort((a,b) => a.week - b.week);
-        localStorage.setItem('verses_2026', JSON.stringify(bibleVerses));
-        alert("성구가 저장되었습니다.");
-        location.reload();
+        
+        // 파이어베이스에 성구 리스트 저장
+        database.ref('appData/verses').set(bibleVerses).then(() => {
+            alert("성구가 서버에 실시간 저장되었습니다.");
+            document.getElementById('admin-panel').style.display='none';
+        });
     }
 
     function searchVerse() {
